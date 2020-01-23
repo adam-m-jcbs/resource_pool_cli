@@ -1,20 +1,46 @@
-__Resource Pool CLI__ by Gerardo Laracuente
+__Resource Pool CLI__ by Adam Jacobs
 
 ## Project Summary:
 
-This is a cli tool written in Python for automatically creating, resizing, and destroying Kubernetes clusters. It regards these clusters as resource pools that can be described in terms of cores and memory.
+`resource_pool_cli` is a tool originally written by developer Gerardo Laracuente (@glaracuente) while he was at Insight Data Science.
+I have forked and adapted it here with permission.
 
-This was my DevOps fellowship project as part of the Insight Data Science Summer 2019 NYC cohort. 
+`resource_pool_cli` provides a command-line interface that leverages a tool
+written in Python for automatically creating, resizing, and destroying
+Kubernetes clusters on in-house hardware. It regards these clusters as resource
+pools that can be described in terms of cores and memory.  The use-case is
+ramping up deployment of existing software on modern, cloud-aware platforms
+while still being able to keep the code in production without completely
+refactoring to be cloud-native or robustly containerized.
 
-*I am not the original author of the files inside of the "docker" and "k8s_dashboard" directories. I merely edited them to suit the needs of this project. All other files were written by me from scratch. 
-
-
+This fork builds out high availability and self-healing, enabling exploration
+and prototyping of cloud-aware features as well as some initial benefits of a robust
+DevOps platform:
+- thing 1
+- thing 2
+ 
 ## Why Resource Pool CLI?:
 
-Whether it's due to costs or regulations, not everyone can run in the cloud, but that doesn’t mean you can’t be just as agile as those who do. There are 2 main issues with managing on-premise servers. 1). Reliability suffers due to server failures. 2) New features are held back due to the long purchase/install cycle for new servers.
+Many institutions are not running in the cloud using modern deployment
+infrastructures.  The reasons why are unique to each institution, but common
+reasons include: regulatory restrictions, the costs of robustly (securely!)
+refactoring existing production codebases to be cloud-native without any
+degradation in service, or the applications deployed utilize either specialized
+hardware that's not well-supported _or_ relies on bare-metal, low-level access
+to hardware that is difficult to target on major cloud platforms.
 
-We need to stop babysitting individual servers, and begin to think in terms of total cores and memory. My command line tool enables a team to request their resources in these terms, and all the heavy lifting is handled for them. Within minutes, they will have a Kubernetes cluster to deploy their services on, which they can also resize as needed. 
+Some of these institutions will get a net monetary benefit from ramping up and
+investing in developing cloud-native technologies, while others will get all
+the value they need by continuing to run their applications as-is while
+leveraging some of the benefits from technology that has emerged from the cloud: very
+cheap, fast deployment - in production -; decoupling development infrastructure
+from applications, enabling powerful monitoring and metrics that yield
+actionable insight; and letting everyone in the institution focus on what
+they're best at.
 
+`resource_pool_cli` enables institutions in this position to start iterating on
+solutions immediately, gaining insight into how they can leverage emerging
+technology and what the cost-benefit analysis will look like.
 
 ## What's going on under the hood?:
 
