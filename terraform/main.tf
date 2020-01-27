@@ -1,3 +1,11 @@
+#main.tf
+#   like main.c, terraform starts here.  This file serves to tell terraform how
+#   you want to initialize and deploy.  
+#   
+#   TODO: 
+#     + describe how other files complement this
+#     + do not hard-code key_name, consider a tool like AWS-vault or similar
+
 provider "aws" {
   region = "us-east-1"
 }
@@ -5,7 +13,7 @@ provider "aws" {
 resource "aws_instance" "captain" {
   ami           = "ami-01d9d5f6cecc31f85"
   instance_type = "t2.micro"
-  key_name      = "grlaracuente-IAM"
+  key_name      = "ajacobs-IAM-keypair"
 
   user_data = <<-EOF
               #!/bin/bash
@@ -26,7 +34,7 @@ resource "aws_instance" "resource_server_medium" {
   ami           = "ami-01d9d5f6cecc31f85"
   instance_type = "t2.medium"
   count         = 6
-  key_name      = "grlaracuente-IAM"
+  key_name      = "ajacobs-IAM-keypair"
 
   tags = {
     Name = "resource_server_medium"
@@ -37,7 +45,7 @@ resource "aws_instance" "resource_server_micro" {
   ami           = "ami-01d9d5f6cecc31f85"
   instance_type = "t2.micro"
   count         = 6
-  key_name      = "grlaracuente-IAM"
+  key_name      = "ajacobs-IAM-keypair"
 
   tags = {
     Name = "resource_server_micro"

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO Figure out exactly what this is for.
+# current guess: the cli is basically a wrapper around docker
+
 RESOURCE_CLI_ARGS="$@"
 
 if [[ $# -eq 0 ]] ; then
