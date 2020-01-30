@@ -57,13 +57,22 @@ technology and what the cost-benefit analysis will look like.
 
 ## What's going on under the hood?:
 
-TODO: this section is still the original draft from Gerry.  To make this
+
+Python Resource Pool API + Ansible --> use-case appropriate k8s deployment
+
+The API is written in Python and exposes a CLI utility.  The backend is powered by Ansible, which is leveraged to very carefully deploy exaclty the k8s cluster deployment we need that works with existing apps.  The API exposes the specific features of our k8s deployment needed, allowing users/developers to worry about their work, not how to install a custom k8s deployment.
+
+Examples of k8s functionality that are exposed through the API include:
+spawn new k8s clusters
+add nodes
+drain
+remove nodes
+
+Note how the API thinks from the perspective of our users and developers, not bothering with potentially confusing k8s API object terminology, opting instead for the familiar terminology of clusters and nodes.
+
+TODO: everything below this is the original draft from Gerry.  To make this
 project my own, I need to rewrite it in my words and adapted for my different
 use-case.
-
-Python CLI > Ansible > Servers = Kubernetes Clusters
-
-The CLI is written in Python, but is powered by Ansible. Ansible playbooks contain the instructions to create new kubernetes clusters, add nodes, drain and delete nodes, etc. 
 
 <p align="center">
 <img src= img/arch.png width="700" height="400">
