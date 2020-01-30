@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+#pool_helpers provides an API for critical resource_pool_cli logics
+
+#TODO Add brief, basic documentation appropriate for other operators, if time
+
 import click
 import random
 import string

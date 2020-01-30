@@ -1,20 +1,23 @@
 #!/usr/bin/python3
 
-import click
+import click #provides click decorators, more broadly it strives to be an all-in-one solution for writing best-practices CLIs
+
+#Enable portable access to a variety of low-level functionality that works correctly in a range of environments (probably I am on some kind of linux, but windows supported too)
 import sys
 import os
 import subprocess
-import time
-import fileinput
-import shutil
+import time #just for time.sleep(), but I think from x import y leads to less readable code 
+import fileinput #built-in that enables efficient looping over standard input or list of files (like ansible playbooks).  For more general file manipulation, see open()
+import shutil #always have shutil ready if you're writing code to be used by operators
 
-# Chose to import helper functions as rp to make it easier to understand
-# that these rp.* function are defined in another file.
+# For readability and maintainability, import helpers as `rp`
+# This makes it more natural to utilize the API
+# "rp" stands for resource pool
 import pool_helpers as rp
 
-# Using the import * here to bring in the DIR varibales
-from pool_helpers import *
-
+# Import variables explicity
+from pool_helpers import POOLS_DIR
+# Available: ANSIBLE_DIR, PLAYBOOK_DIR, TEMPLATE_DIR, POOLS_DIR, FLEET_HOSTS_YAML_FILE
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 def cli():
@@ -340,5 +343,6 @@ def destroy(rp_name):
         click.echo("Your input did not match the validation string")
 
 
+#Note the `pass` in the in the cli() definition.  `pass` can have semantic meaning! not just for stubs
 if __name__ == "__main__":
     cli()
