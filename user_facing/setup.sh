@@ -3,6 +3,8 @@
 # `setup.sh` serves to prepare the user environment for utilizing
 # resource_pool_cli.
 #
+# Heavily utilizes ansible (as does the python utility through its API)
+#
 # Assumes:
 # TODO Add what is assumed by/necessary conditions for this script
 #   1)
