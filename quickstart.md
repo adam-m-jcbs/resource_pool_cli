@@ -80,3 +80,28 @@ ubuntu@ip$ sudo ./resource_pool.sh list
 ubuntu@ip$ sudo ./resource_pool.sh resize -c 8  list
 
 ```
+
+#Docs to be orged later
+
+## Kubernetes Deployment
+
+Here we sketch out the essentials of the k8s deployment.
+
+### My users
+The first thing to understand is the users of this software.  They are technical developers that prefer to ssh into a machine and work from there.  Most of their workflows are organized around this principle.  While they are very technically savvy, they are not experts in cloud-native technology.  I have made the choice here to accomodate existing workflows.
+
+Thus, the job of our k8s deployment here is: give our developers access to the features they want from cloud-native technology without them having to ever understand it or directly interact with it.  Rather, they use familiar commands in a familiar environment to achieve the same things they're doing in on-prem systems.
+
+I achieve this with the `resource_pool_cli` API.
+
+Now that you know this, you'll understand part of my motivation for deploying k8s in the way I'm about to describe.
+
+If you `ssh` into my infra, you will find no `kubectl` or similar exposed.  No one working in this infra should have to think about k8s, docker, ansible, etc.  Perhaps in the future, but for now - no.
+
+### How k8s is deployed
+Rather, my k8s deployment is composed largely through a set of Ansible playbooks.  I will sketch that out here.
+
+You do a `terraform apply` on my infra.  How is k8s stood up?
+
+
+
