@@ -11,10 +11,32 @@
 #    A provider is responsible for understanding API interactions and exposing resources. Providers generally are an IaaS (e.g. Alibaba Cloud, AWS, GCP, Microsoft Azure, OpenStack), PaaS (e.g. Heroku), or SaaS services (e.g. Terraform Cloud, DNSimple, Cloudflare).
 provider "aws" {
   region = "us-east-1"
+  version = "~> 2.0"
 }
 
-#Define a resource the provider knows about (basically, this is one of the ways terraform APIs and provider APIs talk)
-#In this case, a jumphost named captain
+#Define a AWS resource the provider knows about (basically, this is one of the
+#ways terraform APIs and provider APIs talk) In this case, a jumphost named captain
+#  For aws_instance documentation, see e.g. https://www.terraform.io/docs/providers/aws/r/instance.html
+#  TODO: Add a corresponding data resource, like:
+#  
+#  data "aws_ami" "ubuntu" {
+#    most_recent = true
+# 
+#    filter {
+#      name   = "name"
+#      values = ["ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"]
+#    }
+# 
+#    filter {
+#      name   = "virtualization-type"
+#      values = ["hvm"]
+#    }
+# 
+#    owners = ["099720109477"] # Canonical
+#  }
+#
+#  This will help further minimize the amount of by-hand setup users have to do.
+#  I don't want them to have to execute setup.sh.
 resource "aws_instance" "captain" {
   ami           = "ami-01d9d5f6cecc31f85"  #The Amazon Machine Image, basically your resource's base OS
   instance_type = "t2.micro"               #Type of resource, see AWS docs, t2.micro is free and good to start with
@@ -62,7 +84,11 @@ resource "aws_instance" "resource_server_micro" {
 
 #Print the captain's public id to the terminal after things like terraform apply or refresh
 output "captain_public_ip" {
-  value = ["${aws_instance.captain.public_ip}"]
+  value = [
+    "${aws_instance.captain.public_ip}",
+    "${aws_instance.captain.public_dns}"
+  ]
+  #value = ["${aws_instance.captain.public_ip} ${aws_instance}"]
 }
 
 output "resource_server_medium_public_ips" {
