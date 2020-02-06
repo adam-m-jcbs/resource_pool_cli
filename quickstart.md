@@ -103,5 +103,12 @@ Rather, my k8s deployment is composed largely through a set of Ansible playbooks
 
 You do a `terraform apply` on my infra.  How is k8s stood up?
 
+## Docker
+Basic image building workflow in `docker/`:
+```
+docker login
+docker build -t docker-userid/my_docker_image:tag
+docker image push docker-userid/my_docker_image:tag
+```
 
 
