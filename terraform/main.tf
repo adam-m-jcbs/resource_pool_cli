@@ -74,9 +74,23 @@ resource "aws_instance" "captain" {
   }
 
   #As a pragmatic matter I'm using provisioners.  But note these hinder terraform's ability to properly lay out plans for complex infrastructure.  Provisioners should be eliminated to maximize infra maintainabililty and stability.
+  #provisioner "file" {
+  #  source      = "../user_facing/1-setup-env.sh"
+  #  destination = "/var/tmp/1-setup-env.sh"
+  #  
+  #  connection {
+  #    type     = "ssh"
+  #    user     = "ubuntu"
+  #    private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+  #    #self here should be equivalent to aws_instance.captain.public_dns, but terraform recommends using self
+  #    host     = "${aws_instance.captain.public_ip}"
+  #  }
+  #  
+  #}
+
   provisioner "file" {
-    source      = "../user_facing/setup.sh"
-    destination = "/var/tmp/setup.sh"
+    source      = "../user_facing"
+    destination = "/var/tmp"
     
     connection {
       type     = "ssh"
@@ -87,6 +101,23 @@ resource "aws_instance" "captain" {
     }
     
   }
+
+  #securely provision secrets - only root users can see this
+  provisioner "file" {
+    source      = "../_donottrack/ajacobsdocid_access_token.txt"
+    destination = "/var/tmp/doc_acc_tok"
+    
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+      #self here should be equivalent to aws_instance.captain.public_dns, but terraform recommends using self
+      host     = "${aws_instance.captain.public_ip}"
+    }
+    
+  }
+
+
   #provisioner "local-exec" {
   #  command = "echo hec2-3-84-41-174.compute-1.amazonaws.comey I am running on your machine"
   #}
