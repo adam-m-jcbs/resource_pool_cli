@@ -64,3 +64,5 @@ Update: in engineering a solution to this and developing a more complete underst
 - rename all "captain" reference to "jumphost"
 - harden IAM config
 - convert all python2 to python3
+- rename pool_helpers --> resource_pool_api, light refactor
+
