@@ -1,10 +1,7 @@
 #main.tf
 #   like main.c, terraform starts here.  This file serves to tell terraform how
-#   you want to initialize and deploy.  
+#   you want to initialize and deploy your infrastructure.  
 #   
-#   TODO: 
-#     + describe how other files complement this
-#     + do not hard-code key_name, consider a tool like AWS-vault or similar
 
 #Set the provider and any provider-specific config
 #From terraform docs:
@@ -131,16 +128,17 @@ resource "aws_instance" "captain" {
 }
 
 #Create a new resource, this time a t2.medium EC2 instance with 6 nodes
-#resource "aws_instance" "resource_server_medium" {
-#  ami           = "ami-01d9d5f6cecc31f85"
-#  instance_type = "t2.medium"
-#  count         = 6
-#  key_name      = "ajacobs-IAM-keypair"
-#
-#  tags = {
-#    Name = "resource_server_medium"
-#  }
-#}
+#TODO: rename server --> cluster, more accurate
+resource "aws_instance" "resource_server_medium" {
+  ami           = "ami-01d9d5f6cecc31f85"
+  instance_type = "t2.medium"
+  count         = 6
+  key_name      = "ajacobs-IAM-keypair"
+
+  tags = {
+    Name = "resource_server_medium"
+  }
+}
 #
 ##Create a new resource, this time a t2.micro EC2 instance with 6 nodes
 #resource "aws_instance" "resource_server_micro" {
@@ -163,9 +161,9 @@ output "captain_public_ip" {
   #value = ["${aws_instance.captain.public_ip} ${aws_instance}"]
 }
 
-#output "resource_server_medium_public_ips" {
-#  value = ["${aws_instance.resource_server_medium.*.public_ip}"]
-#}
+output "resource_server_medium_public_ips" {
+  value = ["${aws_instance.resource_server_medium.*.public_ip}"]
+}
 #
 #output "resource_server_micro_public_ips" {
 #  value = ["${aws_instance.resource_server_micro.*.public_ip}"]
