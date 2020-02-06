@@ -65,4 +65,5 @@ RUN set -x && \
 
 
 ENTRYPOINT ["/etc/resource_pool_cli/resource_pool_cli.py"]
-
+#TODO: add default command, like:
+#   CMD ["arg1", "arg2"]
