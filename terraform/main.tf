@@ -127,8 +127,19 @@ resource "aws_instance" "captain" {
   #}
 }
 
+#Enable use of allocated eip
+resource "aws_eip" "public_igw" {
+  vpc = true
+}
+
+#Create the smallest ever VPC, mostly for elastic ip
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = "${aws_instance.captain.id}"
+  allocation_id = "${aws_eip.public_igw.id}"
+}
+
 #Create a new resource, this time a t2.medium EC2 instance with 6 nodes
-#TODO: rename server --> cluster, more accurate
+#TODO: rename server --> cluster (k8s or trad datacenter), more accurate
 resource "aws_instance" "resource_server_medium" {
   ami           = "ami-01d9d5f6cecc31f85"
   instance_type = "t2.medium"
@@ -140,22 +151,23 @@ resource "aws_instance" "resource_server_medium" {
   }
 }
 #
-##Create a new resource, this time a t2.micro EC2 instance with 6 nodes
-#resource "aws_instance" "resource_server_micro" {
-#  ami           = "ami-01d9d5f6cecc31f85"
-#  instance_type = "t2.micro"
-#  count         = 6
-#  key_name      = "ajacobs-IAM-keypair"
-#
-#  tags = {
-#    Name = "resource_server_micro"
-#  }
-#}
+#Create a new resource, this time a t2.micro EC2 instance with 6 nodes
+resource "aws_instance" "resource_server_micro" {
+  ami           = "ami-01d9d5f6cecc31f85"
+  instance_type = "t2.micro"
+  count         = 6
+  key_name      = "ajacobs-IAM-keypair"
+
+  tags = {
+    Name = "resource_server_micro"
+  }
+}
 
 #Print the captain's public id to the terminal after things like terraform apply or refresh
 output "captain_public_ip" {
   value = [
     "${aws_instance.captain.public_ip}",
+    "${aws_instance.captain.private_ip}",
     "${aws_instance.captain.public_dns}"
   ]
   #value = ["${aws_instance.captain.public_ip} ${aws_instance}"]
@@ -168,3 +180,6 @@ output "resource_server_medium_public_ips" {
 #output "resource_server_micro_public_ips" {
 #  value = ["${aws_instance.resource_server_micro.*.public_ip}"]
 #}
+output "igw_eip" {
+  value = ["${aws_eip_association.eip_assoc.*}"]
+}
