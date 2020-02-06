@@ -41,6 +41,20 @@ It was a minor distraction during which I could've been developing, but I took t
 
 
 
+## How to automate my infra's bootstrapping while respecting best practices
+
+This is a pretty broad challenge, but here's a specific example:
+
+I like to always update the systems at the base of my infrastructure (such as the OS), if for no other reason than to get security and bug fix patches in.  However, for many OS images in use, this can require a restart to fully take effect.  It's a difficult challenge to know when it's worth it to setup a more involved startup process with reboots integrated, or if it's sufficient to get the updates that are immediatley available without a reboot.  Or perhaps there is a way to completley obviate the need for reboot.  I know how to do this in some operating systems, but not all.  I could probably engineer a robust solution by building on top of an Arch linux image.
+
+Some applications and the software they may leverage are poor at adapting to rapidly evolving environments, so there's also the risk that using the latest updates will break software being deployed.  If this is the case, I would want to evaluate the team's build process so that we can better isolate the software from envinornment dependencies that aren't mission-critical.  It is just too risky to not be running your software on a platform with the latest security and bug fixes applied.
+
+Anyway, my current solution to the problem is to live with the updates I get immediately without reboot and to revisit this choice if I find my users or their software require updates to be fully applied.
+
+Update: in engineering a solution to this and developing a more complete understanding of `user_data`, I believe careful use of it can pretty simply achieve the core of what I need here.
+
+
+
 ## Minor/Quality of Life/Best Practices/Security
 
 - package resource_pool_cli as actual cli bin/script, instead of just a `.sh` in home.  Have setup.sh do this
