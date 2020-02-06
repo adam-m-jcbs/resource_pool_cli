@@ -16,10 +16,6 @@ docker run -it --entrypoint="" -v ${DIR_ANSIBLE}/keys/:/root/.ssh/ ${DOCKER_IMG}
 wget ${GITRAW_BASE_URL}/user_facing/resource_pool.sh -O "${DIR_RESOURCE_POOL}/resource_pool.sh"
 chmod 755 "${DIR_RESOURCE_POOL}/resource_pool.sh"
 
-# after exporting key, lock it down
-cat ${DIR_ANSIBLE}/keys/id_rs.pub >> /root/.ssh/authorized_keys
-chmod 400 ${DIR_ANSIBLE}/keys/*
-
 # LET USER KNOW NEXT STEPS
 echo "The resource_pool utility is now available at /etc/resource_pool/resource_pool.sh. Before using, you should:"
 echo ""
