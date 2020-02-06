@@ -111,4 +111,9 @@ docker build -t docker-userid/my_docker_image:tag
 docker image push docker-userid/my_docker_image:tag
 ```
 
+You can generate access tokens on DockerHub, and then login scriptably, e.g.:
+```
+cat ajacobsdocid_access_token.txt | sudo docker login --username ajacobsdocid --password-stdin
+```
 
+while this shouldn't send any plaintext passwords exposed in connections, it will save it in plaintext to your infra's filesystem.  Only authorized user should be able to see it, but something to think about.  Be careful about protecting access tokens.  Fortunately, if one is leaked it's easy to monitor access and kill it on Docker Hub.

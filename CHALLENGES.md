@@ -63,3 +63,4 @@ Update: in engineering a solution to this and developing a more complete underst
 - implement auto-completion for the cli
 - rename all "captain" reference to "jumphost"
 - harden IAM config
+- convert all python2 to python3
