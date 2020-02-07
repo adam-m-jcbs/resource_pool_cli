@@ -15,8 +15,3 @@ docker run -it --entrypoint="" -v ${DIR_ANSIBLE}/keys/:/root/.ssh/ ${DOCKER_IMG}
 # FETCH THE RESOURCE POOL WRAPPER SCRIPT
 wget ${GITRAW_BASE_URL}/user_facing/resource_pool.sh -O "${DIR_RESOURCE_POOL}/resource_pool.sh"
 chmod 755 "${DIR_RESOURCE_POOL}/resource_pool.sh"
-
-# LET USER KNOW NEXT STEPS
-echo "The resource_pool utility is now available at /etc/resource_pool/resource_pool.sh. Before using, you should:"
-echo ""
-echo "2) Add the IP addresses of these servers to /etc/resource_pool/ansible/pools/fleet/hosts.yml"
