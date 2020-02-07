@@ -12,4 +12,11 @@ for template_file in join masters workers; do
     wget "${URL_POOL_TEMPLATE}/${template_file}.yml" -O "${DIR_POOL_TEMPLATE}/${template_file}.yml"
 done
 
-wget "${URL_FLEET}/hosts" -O "${DIR_ANSIBLE}/pools/fleet/hosts"
+#URL_FLEET="${GITRAW_BASE_URL}/ansible/pools/fleet"
+wget "${URL_FLEET}/hosts.yml" -O "${DIR_ANSIBLE}/pools/fleet/hosts.yml"
+
+#URL_FLEET="${GITRAW_BASE_URL}/ansible/pools/fleet"
+wget "${GITRAW_BASE_URL}/ansible/hosts" -O "${DIR_ANSIBLE}/hosts"
+
+#URL_FLEET="${GITRAW_BASE_URL}/ansible/pools/fleet"
+wget "${GITRAW_BASE_URL}/ansible/ansible.cfg" -O "${DIR_ANSIBLE}/ansible.cfg"

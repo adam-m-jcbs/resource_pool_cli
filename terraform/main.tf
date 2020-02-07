@@ -56,7 +56,7 @@ resource "aws_instance" "captain" {
               sudo apt-get install -y apt-transport-https ca-certificates gnupg-agent
 
               #install utilities
-              sudo apt-get install -y htop ansible
+              sudo apt-get install -y htop
 
               #authenticate with our software provider (essentially docker in this case) and add their repositories to our package database 
               sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -      

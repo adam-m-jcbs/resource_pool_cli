@@ -187,18 +187,18 @@ def get_specs(rp_name):
     process = subprocess.Popen(
         ansible_facts_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
-    ansible_facts_cmd_out = process.communicate()
+    ansible_facts_cmd_out = process.communicate()[0]
 
     click.echo('facts output: {}'.format(ansible_facts_cmd_out))
 
-    ansible_facts_cmd = "ls /etc/ansible/"
-    click.echo('facts cmd: {}'.format(ansible_facts_cmd))
-    process = subprocess.Popen(
-        ansible_facts_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
-    ansible_facts_cmd_out = process.communicate()
+    #ansible_facts_cmd = "ls /etc/ansible/"
+    #click.echo('facts cmd: {}'.format(ansible_facts_cmd))
+    #process = subprocess.Popen(
+    #    ansible_facts_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    #)
+    #ansible_facts_cmd_out = process.communicate()
 
-    click.echo('facts output: {}'.format(ansible_facts_cmd_out))
+    #click.echo('facts output: {}'.format(ansible_facts_cmd_out))
 
     specs = {}
 
