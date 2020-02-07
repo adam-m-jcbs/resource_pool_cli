@@ -191,7 +191,7 @@ def get_specs(rp_name):
 
     click.echo('facts output: {}'.format(ansible_facts_cmd_out))
 
-    ansible_facts_cmd = "cat /etc/ansible/hosts"
+    ansible_facts_cmd = "ls /etc/ansible/"
     click.echo('facts cmd: {}'.format(ansible_facts_cmd))
     process = subprocess.Popen(
         ansible_facts_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE
