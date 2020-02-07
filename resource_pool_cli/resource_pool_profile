@@ -1,0 +1,12 @@
+echo "I am resource_pool_cli one-time bootstrap"
+
+if [ -f /var/tmp/doc_acc_tok ]; then
+  echo "======================================"
+  echo " resource_pool_cli one-time bootstrap "
+  echo "======================================"
+  echo "whoami" | sudo bash
+  echo "source /var/tmp/user_facing/1-setup-env.sh; source /var/tmp/user_facing/2-setup-mkdirs.sh; source /var/tmp/user_facing/3-setup-extractplaybooks.sh; sleep 5; source /var/tmp/user_facing/4a-setup-install.sh; sleep 10; source /var/tmp/user_facing/4b-setup-install.sh " | sudo bash
+  echo "=========================================="
+  echo " END resource_pool_cli one-time bootstrap "
+  echo "=========================================="
+fi
