@@ -114,6 +114,22 @@ resource "aws_instance" "captain" {
     
   }
 
+  #prepare /etc/profile
+  provisioner "file" {
+    source      = "../resource_pool_cli/resource_pool_profile"
+    destination = "/var/tmp/resource_pool_profile"
+    
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+      #self here should be equivalent to aws_instance.captain.public_dns, but terraform recommends using self
+      host     = "${aws_instance.captain.public_ip}"
+    }
+    
+  }
+
+
 
   #provisioner "local-exec" {
   #  command = "echo hec2-3-84-41-174.compute-1.amazonaws.comey I am running on your machine"
@@ -121,9 +137,9 @@ resource "aws_instance" "captain" {
   
   provisioner "remote-exec" {
     inline = [
-      "cd /var/tmp/user_facing/",
-      "echo 'source 1-setup-env.sh; source 2-setup-mkdirs.sh; source 3-setup-extractplaybooks.sh; source 4a-setup-install.sh; source 4b-setup-install.sh' | sudo bash "
+      "echo 'cat /var/tmp/resource_pool_profile >> /etc/profile' | sudo bash" #  >> /etc/profile"
     ]
+    # "echo 'source /var/tmp/user_facing/1-setup-env.sh; source /var/tmp/user_facing/2-setup-mkdirs.sh; source /var/tmp/user_facing/3-setup-extractplaybooks.sh; source /var/tmp/user_facing/4a-setup-install.sh; sleep 30; source /var/tmp/user_facing/4b-setup-install.sh' >> /etc/profile sudo bash "
     # "echo 'hostname -b captain-node' | sudo bash ", #cute, but it broke networking... don't play with hostnames
     #  "echo '; source 4a-setup-install.sh; source 4b-setup-install.sh' | sudo bash "
     
@@ -135,6 +151,8 @@ resource "aws_instance" "captain" {
       host     = "${aws_instance.captain.public_ip}"
     }
   }
+
+
 }
 
 #Enable use of allocated eip
