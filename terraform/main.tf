@@ -122,9 +122,10 @@ resource "aws_instance" "captain" {
   provisioner "remote-exec" {
     inline = [
       "cd /var/tmp/user_facing/",
-      "echo 'source 1-setup-env.sh; source 2-setup-mkdirs.sh; source 3-setup-extractplaybooks.sh; source 4a-setup-install.sh; source 4b-setup-install.sh' | sudo bash ",
-      "echo 'hostname -b captain-node' | sudo bash "
+      "echo 'source 1-setup-env.sh; source 2-setup-mkdirs.sh; source 3-setup-extractplaybooks.sh; source 4a-setup-install.sh; source 4b-setup-install.sh' | sudo bash "
     ]
+    # "echo 'hostname -b captain-node' | sudo bash ", #cute, but it broke networking... don't play with hostnames
+    #  "echo '; source 4a-setup-install.sh; source 4b-setup-install.sh' | sudo bash "
     
     connection {
       type     = "ssh"
