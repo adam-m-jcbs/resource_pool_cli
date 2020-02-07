@@ -36,7 +36,8 @@ provider "aws" {
 #  I don't want them to have to execute setup.sh.
 resource "aws_instance" "captain" {
   ami           = "ami-01d9d5f6cecc31f85"  #The Amazon Machine Image, basically your resource's base OS
-  instance_type = "t2.micro"               #Type of resource, see AWS docs, t2.micro is free and good to start with
+  #instance_type = "t2.micro"               #Type of resource, see AWS docs, t2.micro is free and good to start with
+  instance_type = "t2.medium"
   key_name      = "ajacobs-IAM-keypair"    #You must have setup keypairs with Amazon and a proper .pem file
   
   #user_data is one of the ways you can setup your "early" system, getting the very basics needed for your users to be productive
@@ -199,7 +200,7 @@ resource "aws_eip_association" "eip_assoc" {
 resource "aws_instance" "resource_server_medium" {
   ami           = "ami-01d9d5f6cecc31f85"
   instance_type = "t2.medium"
-  count         = 6
+  count         = 2
   key_name      = "ajacobs-IAM-keypair"
 
   #user_data is one of the ways you can setup your "early" system, getting the very basics needed for your users to be productive
@@ -227,7 +228,7 @@ resource "aws_instance" "resource_server_medium" {
               sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
               #install utilities
-              sudo apt-get install -y htop ansible
+              sudo apt-get install -y htop
               EOF
   
   tags = {
