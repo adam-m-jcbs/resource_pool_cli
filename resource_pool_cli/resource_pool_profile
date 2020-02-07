@@ -1,11 +1,15 @@
-echo "I am resource_pool_cli one-time bootstrap"
-
 if [ -f /var/tmp/doc_acc_tok ]; then
   echo "======================================"
   echo " resource_pool_cli one-time bootstrap "
   echo "======================================"
-  echo "whoami" | sudo bash
-  echo "source /var/tmp/user_facing/1-setup-env.sh; source /var/tmp/user_facing/2-setup-mkdirs.sh; source /var/tmp/user_facing/3-setup-extractplaybooks.sh; sleep 5; source /var/tmp/user_facing/4a-setup-install.sh; sleep 10; source /var/tmp/user_facing/4b-setup-install.sh " | sudo bash
+  echo "whoami" | bash
+  #echo "source /var/tmp/user_facing/1-setup-env.sh; source /var/tmp/user_facing/2-setup-mkdirs.sh; source /var/tmp/user_facing/3-setup-extractplaybooks.sh; echo 'sleeping 15'; sleep 15; source /var/tmp/user_facing/4a-setup-install.sh; echo 'sleeping 25'; sleep 25; source /var/tmp/user_facing/4b-setup-install.sh " | sudo bash
+  echo "source /var/tmp/user_facing/1-setup-env.sh; source /var/tmp/user_facing/2-setup-mkdirs.sh; source /var/tmp/user_facing/3-setup-extractplaybooks.sh " | sudo bash
+  echo "source /var/tmp/user_facing/1-setup-env.sh; source /var/tmp/user_facing/2-setup-mkdirs.sh; source /var/tmp/user_facing/3-setup-extractplaybooks.sh; echo 'sleeping 15'; sleep 15; source /var/tmp/user_facing/4a-setup-install.sh; echo 'sleeping 25'; sleep 25; source /var/tmp/user_facing/4b-setup-install.sh " | sudo bash
+  echo "mkdir -p /home/ubuntu/.local/bin/" | sudo bash
+  echo "cp /etc/resource_pool/resource_pool.sh /home/ubuntu/.local/bin/" | sudo bash
+  echo "chown -R ubuntu /home/ubuntu/.local/" | sudo bash
+  echo "chown -R ubuntu /home/ubuntu/.docker/" | sudo bash
   echo "=========================================="
   echo " END resource_pool_cli one-time bootstrap "
   echo "=========================================="
