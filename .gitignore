@@ -1,5 +1,7 @@
 # quick place to put untracked and/or sensitive files
 _donottrack/
+terraform/*.err
+user_facing/setup.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,5 +1,7 @@
+#Use alpine:3.7 as base image (note: 3.7 is no longer supported by Docker's official alpine image)
 FROM alpine:3.7
 
+#Set evnironment variable
 ENV ANSIBLE_VERSION 2.8.0
 ENV ANSIBLE_GATHERING smart
 ENV ANSIBLE_HOST_KEY_CHECKING false
@@ -27,6 +29,7 @@ ENV BUILD_PACKAGES \
   py-yaml \
   ca-certificates
 
+# Build on top of the base image
 RUN set -x && \
     \
     echo "==> Adding build-dependencies..."  && \
@@ -64,5 +67,7 @@ RUN set -x && \
     chmod 755 /etc/resource_pool_cli/pool_helpers.py
 
 
+#Expose this image similar to how CLI's are exposed: as an entry point command that args can be appended to
 ENTRYPOINT ["/etc/resource_pool_cli/resource_pool_cli.py"]
-
+#TODO: add default command, like:
+#   CMD ["arg1", "arg2"]
