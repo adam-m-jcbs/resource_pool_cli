@@ -89,6 +89,20 @@ resource "aws_instance" "captain" {
   #}
 
   provisioner "file" {
+    source      = "../ansible/ansible.cfg"
+    destination = "/var/tmp/ansible.cfg"
+    
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+      #self here should be equivalent to aws_instance.captain.public_dns, but terraform recommends using self
+      host     = "${aws_instance.captain.public_ip}"
+    }
+    
+  }
+
+  provisioner "file" {
     source      = "../user_facing"
     destination = "/var/tmp"
     
