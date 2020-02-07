@@ -11,4 +11,5 @@ fi
 
 DIR_ANSIBLE="/etc/resource_pool/ansible/"
 
-docker run -it -v ${DIR_ANSIBLE}:/etc/ansible/ -v ${DIR_ANSIBLE}/keys/:/root/.ssh/ ajacobsdocid/resource_pool_cli:latest ${RESOURCE_CLI_ARGS}
+#docker run -it -v ${DIR_ANSIBLE}:/etc/ansible/ -v ${DIR_ANSIBLE}/keys/:/root/.ssh/ ajacobsdocid/resource_pool_cli:latest ${RESOURCE_CLI_ARGS}
+docker run --entrypoint="" -it -v ${DIR_ANSIBLE}:/etc/ansible/ -v ${DIR_ANSIBLE}/keys/:/root/.ssh/ ajacobsdocid/resource_pool_cli:latest ${RESOURCE_CLI_ARGS}
