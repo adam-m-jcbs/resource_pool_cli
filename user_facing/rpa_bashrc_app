@@ -1,0 +1,8 @@
+rpa_cli() {
+    local rpa_cmd="$1" \
+          rpa_arg="$2"
+
+    shift 2
+
+    sudo /home/ubuntu/.local/bin/resource_pool.sh "${rpa_cmd}" "${rpa_arg}"
+}
