@@ -205,6 +205,7 @@ def get_specs(rp_name):
     # The ansible_facts_cmd saves facts as json inside of files named after the server.
     # This is why we are looping through the directory, and reading file contents as json.
     for file in os.listdir(rp_dir):
+        click.echo('cur file: {}'.format(file))
         if file.endswith(".yml"):
             continue
 
@@ -212,6 +213,7 @@ def get_specs(rp_name):
             data = myfile.read()
         facts = json.loads(data)
 
+        click.echo('json facts: {}'.format(facts))
         # Whether or not a server can be reached, the fact file is generated.
         # Here, we remove facts from servers that cannot be reachced,
         # in order to avoid inaccurate spec counts.
