@@ -177,7 +177,7 @@ def get_specs(rp_name):
     server_file_name = "workers.yml"
 
     if rp_name == "fleet":
-        server_file_name = "hosts.yml"
+        server_file_name = "hosts"
 
     ansible_facts_cmd = "ansible all -i {}/{} -m gather_facts --tree {}".format(
         rp_dir, server_file_name, rp_dir

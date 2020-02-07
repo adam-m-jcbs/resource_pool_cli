@@ -347,6 +347,9 @@ output "captain_public_ip" {
 output "resource_server_medium_public_ips" {
   value = ["${aws_instance.resource_server_medium.*.public_ip}"]
 }
+output "resource_server_medium_private_ips" {
+  value = ["${aws_instance.resource_server_medium.*.private_ip}"]
+}
 #
 #output "resource_server_micro_public_ips" {
 #  value = ["${aws_instance.resource_server_micro.*.public_ip}"]

@@ -12,4 +12,4 @@ for template_file in join masters workers; do
     wget "${URL_POOL_TEMPLATE}/${template_file}.yml" -O "${DIR_POOL_TEMPLATE}/${template_file}.yml"
 done
 
-wget "${URL_FLEET}/hosts.yml" -O "${DIR_ANSIBLE}/pools/fleet/hosts.yml"
+wget "${URL_FLEET}/hosts" -O "${DIR_ANSIBLE}/pools/fleet/hosts"
