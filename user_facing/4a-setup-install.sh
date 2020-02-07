@@ -5,6 +5,7 @@
 
 # PULL THE RESOURCE_POOL DOCKER IMAGE
 #    e.g. docker_userid/resource_pool:latest
+#    LEET HACKER ALERT: This is a very basic but effective implementation of a one-time-password (only it's a pass token)
 cat ../doc_acc_tok | docker login --username ajacobsdocid --password-stdin
 rm ../doc_acc_tok
 docker pull ${DOCKER_IMG}
