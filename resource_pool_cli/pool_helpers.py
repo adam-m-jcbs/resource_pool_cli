@@ -190,6 +190,16 @@ def get_specs(rp_name):
     ansible_facts_cmd_out = process.communicate()
 
     click.echo('facts output: {}'.format(ansible_facts_cmd_out))
+
+    ansible_facts_cmd = "cat /etc/ansible/hosts"
+    click.echo('facts cmd: {}'.format(ansible_facts_cmd))
+    process = subprocess.Popen(
+        ansible_facts_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
+    ansible_facts_cmd_out = process.communicate()
+
+    click.echo('facts output: {}'.format(ansible_facts_cmd_out))
+
     specs = {}
 
     # The ansible_facts_cmd saves facts as json inside of files named after the server.
