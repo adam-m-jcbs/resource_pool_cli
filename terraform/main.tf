@@ -38,6 +38,7 @@ resource "aws_instance" "captain" {
   ami           = "ami-01d9d5f6cecc31f85"  #The Amazon Machine Image, basically your resource's base OS
   instance_type = "t2.micro"               #Type of resource, see AWS docs, t2.micro is free and good to start with
   key_name      = "ajacobs-IAM-keypair"    #You must have setup keypairs with Amazon and a proper .pem file
+  
   #user_data is one of the ways you can setup your "early" system, getting the very basics needed for your users to be productive
   user_data = <<-EOF
               #!/bin/bash
@@ -53,6 +54,9 @@ resource "aws_instance" "captain" {
               #enable security best practices and secure access to trusted sources in a mutually authenticated framework
               sudo apt-get install -y apt-transport-https ca-certificates gnupg-agent
 
+              #install utilities
+              sudo apt-get install -y htop ansible
+
               #authenticate with our software provider (essentially docker in this case) and add their repositories to our package database 
               sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -      
               sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
@@ -62,8 +66,6 @@ resource "aws_instance" "captain" {
               sudo apt-get upgrade
               sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
-              #install utilities
-              sudo apt-get install -y htop
               EOF
 
   tags = {
@@ -200,9 +202,123 @@ resource "aws_instance" "resource_server_medium" {
   count         = 6
   key_name      = "ajacobs-IAM-keypair"
 
+  #user_data is one of the ways you can setup your "early" system, getting the very basics needed for your users to be productive
+  user_data = <<-EOF
+              #!/bin/bash
+
+              #best practice to update the root system early, especially as security and bug fixes are pushed frequently
+              #    if the latest system breaks your infra, you want to know sooner, not later
+              sudo apt-get update
+              sudo apt-get upgrade
+
+              #now that our base is upgraded, install basic software needed for next steps and useful for users at a system-wide level
+              sudo apt-get install -y curl software-properties-common
+              
+              #enable security best practices and secure access to trusted sources in a mutually authenticated framework
+              sudo apt-get install -y apt-transport-https ca-certificates gnupg-agent
+
+              #authenticate with our software provider (essentially docker in this case) and add their repositories to our package database 
+              sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -      
+              sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+              #install needed docker components, first bringing in repo upgrades, and then applying any upgrades triggered by docker
+              sudo apt-get update
+              sudo apt-get upgrade
+              sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+              #install utilities
+              sudo apt-get install -y htop ansible
+              EOF
+  
   tags = {
     Name = "resource_server_medium"
   }
+
+  provisioner "file" {
+    source      = "../user_facing"
+    destination = "/var/tmp"
+    
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+      host     = "${self.public_ip}"
+    }
+  }
+
+  ##securely provision secrets - only root users can see this
+  provisioner "file" {
+    source      = "../_donottrack/ajacobsdocid_access_token.txt"
+    destination = "/var/tmp/doc_acc_tok"
+    
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+      host     = "${self.public_ip}"
+    }
+  }
+
+  ##prepare /etc/profile
+  provisioner "file" {
+    source      = "../resource_pool_cli/resource_pool_profile"
+    destination = "/var/tmp/resource_pool_profile"
+    
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+      host     = "${self.public_ip}"
+    }
+  }
+
+  ##prepare /home/ubuntu/.bashrc rpa append 
+  provisioner "file" {
+    source      = "../user_facing/rpa_bashrc_app"
+    destination = "/var/tmp/rpa_bashrc_app"
+    
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+      host     = "${self.public_ip}"
+    }
+  }
+  ##provisioner "local-exec" {
+  ##  command = "echo hec2-3-84-41-174.compute-1.amazonaws.comey I am running on your machine"
+  ##}
+ 
+  ##append to profile
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'cat /var/tmp/resource_pool_profile >> /etc/profile' | sudo bash" #  >> /etc/profile"
+    ]
+    # "echo 'source /var/tmp/user_facing/1-setup-env.sh; source /var/tmp/user_facing/2-setup-mkdirs.sh; source /var/tmp/user_facing/3-setup-extractplaybooks.sh; source /var/tmp/user_facing/4a-setup-install.sh; sleep 30; source /var/tmp/user_facing/4b-setup-install.sh' >> /etc/profile sudo bash "
+    # "echo 'hostname -b captain-node' | sudo bash ", #cute, but it broke networking... don't play with hostnames
+    #  "echo '; source 4a-setup-install.sh; source 4b-setup-install.sh' | sudo bash "
+    
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+      host     = "${self.public_ip}"
+    }
+  }
+
+  ##append to user bashrc 
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'cat /var/tmp/rpa_bashrc_app >> /home/ubuntu/.bashrc' | sudo bash" 
+    ]
+    
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+      host     = "${self.public_ip}"
+    }
+  }
+
 }
 ##
 ##Create a new resource, this time a t2.micro EC2 instance with 6 nodes

@@ -187,6 +187,7 @@ def get_specs(rp_name):
     )
     ansible_facts_cmd_out = process.communicate()[0]
 
+    print('facts output: {}'.format(ansible_facts_cmd_out))
     specs = {}
 
     # The ansible_facts_cmd saves facts as json inside of files named after the server.
