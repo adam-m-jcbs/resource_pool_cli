@@ -47,6 +47,8 @@ def create(rp_name, cores, memory):
         sys.exit()
 
     click.echo("Analyzing hardware inventory...")
+    rp_dir = "{}/{}".format(POOLS_DIR, rp_name)
+    os.makedirs(rp_dir, exist_ok=True)
     fleet_specs = rp.get_specs("fleet")
 
     total_cores = 0
