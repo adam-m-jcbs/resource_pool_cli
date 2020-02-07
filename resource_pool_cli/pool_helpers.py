@@ -179,10 +179,10 @@ def get_specs(rp_name):
     if rp_name == "fleet":
         server_file_name = "hosts.yml"
 
-    #ansible_facts_cmd = "ansible all -i /etc/ansible/hosts -m gather_facts --tree {}".format(
-    #    rp_dir, server_file_name, rp_dir
-    #)
-    ansible_facts_cmd = "ansible all --list-hosts"
+    ansible_facts_cmd = "ansible all -m gather_facts --tree {}/{}".format(
+        rp_dir, server_file_name
+    )
+    #ansible_facts_cmd = "ansible all --list-hosts"
     click.echo('facts cmd: {}'.format(ansible_facts_cmd))
     process = subprocess.Popen(
         ansible_facts_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE
