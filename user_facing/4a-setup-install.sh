@@ -10,7 +10,7 @@ rm ../doc_acc_tok
 docker pull ${DOCKER_IMG}
 
 # GENERATE SSH KEYS THAT WILL BE USED BY ANSIBLE
-docker run -it --entrypoint="" -v ${DIR_ANSIBLE}/keys/:/root/.ssh/ ${DOCKER_IMG} /usr/bin/ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''
+docker run --entrypoint="" -v ${DIR_ANSIBLE}/keys/:/root/.ssh/ ${DOCKER_IMG} /usr/bin/ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''
 
 # FETCH THE RESOURCE POOL WRAPPER SCRIPT
 wget ${GITRAW_BASE_URL}/user_facing/resource_pool.sh -O "${DIR_RESOURCE_POOL}/resource_pool.sh"

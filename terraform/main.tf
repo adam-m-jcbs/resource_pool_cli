@@ -119,12 +119,21 @@ resource "aws_instance" "captain" {
   #  command = "echo hec2-3-84-41-174.compute-1.amazonaws.comey I am running on your machine"
   #}
   
-  #provisioner "remote-exec" {
-  #  inline = [
-  #    "echo command1",
-  #    "echo command2"
-  #  ]
-  #}
+  provisioner "remote-exec" {
+    inline = [
+      "cd /var/tmp/user_facing/",
+      "echo 'source 1-setup-env.sh; source 2-setup-mkdirs.sh; source 3-setup-extractplaybooks.sh; source 4a-setup-install.sh; source 4b-setup-install.sh' | sudo bash ",
+      "echo 'hostname -b captain-node' | sudo bash "
+    ]
+    
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("/home/ajacobs/Professional/Projects/InsightFellowship/AWS/ajacobs-IAM-keypair.pem")
+      #self here should be equivalent to aws_instance.captain.public_dns, but terraform recommends using self
+      host     = "${aws_instance.captain.public_ip}"
+    }
+  }
 }
 
 #Enable use of allocated eip
@@ -140,28 +149,28 @@ resource "aws_eip_association" "eip_assoc" {
 
 #Create a new resource, this time a t2.medium EC2 instance with 6 nodes
 #TODO: rename server --> cluster (k8s or trad datacenter), more accurate
-resource "aws_instance" "resource_server_medium" {
-  ami           = "ami-01d9d5f6cecc31f85"
-  instance_type = "t2.medium"
-  count         = 6
-  key_name      = "ajacobs-IAM-keypair"
-
-  tags = {
-    Name = "resource_server_medium"
-  }
-}
+#resource "aws_instance" "resource_server_medium" {
+#  ami           = "ami-01d9d5f6cecc31f85"
+#  instance_type = "t2.medium"
+#  count         = 6
+#  key_name      = "ajacobs-IAM-keypair"
 #
-#Create a new resource, this time a t2.micro EC2 instance with 6 nodes
-resource "aws_instance" "resource_server_micro" {
-  ami           = "ami-01d9d5f6cecc31f85"
-  instance_type = "t2.micro"
-  count         = 6
-  key_name      = "ajacobs-IAM-keypair"
-
-  tags = {
-    Name = "resource_server_micro"
-  }
-}
+#  tags = {
+#    Name = "resource_server_medium"
+#  }
+#}
+##
+##Create a new resource, this time a t2.micro EC2 instance with 6 nodes
+#resource "aws_instance" "resource_server_micro" {
+#  ami           = "ami-01d9d5f6cecc31f85"
+#  instance_type = "t2.micro"
+#  count         = 6
+#  key_name      = "ajacobs-IAM-keypair"
+#
+#  tags = {
+#    Name = "resource_server_micro"
+#  }
+#}
 
 #Print the captain's public id to the terminal after things like terraform apply or refresh
 output "captain_public_ip" {
@@ -173,9 +182,9 @@ output "captain_public_ip" {
   #value = ["${aws_instance.captain.public_ip} ${aws_instance}"]
 }
 
-output "resource_server_medium_public_ips" {
-  value = ["${aws_instance.resource_server_medium.*.public_ip}"]
-}
+#output "resource_server_medium_public_ips" {
+#  value = ["${aws_instance.resource_server_medium.*.public_ip}"]
+#}
 #
 #output "resource_server_micro_public_ips" {
 #  value = ["${aws_instance.resource_server_micro.*.public_ip}"]
