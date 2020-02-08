@@ -1,8 +1,11 @@
 #main.tf
-#   like main.c, terraform starts here.  This file serves to tell terraform how
+#   TODO: break up into variables.tf, tf_llhike main.c, terraform starts here.  This file serves to tell terraform how
 #   you want to initialize and deploy your infrastructure.  
 #   
 
+#######################
+###### PROVIDER #######
+#######################
 #Set the provider and any provider-specific config
 #From terraform docs:
 #    A provider is responsible for understanding API interactions and exposing resources. Providers generally are an IaaS (e.g. Alibaba Cloud, AWS, GCP, Microsoft Azure, OpenStack), PaaS (e.g. Heroku), or SaaS services (e.g. Terraform Cloud, DNSimple, Cloudflare).
@@ -11,29 +14,15 @@ provider "aws" {
   version = "~> 2.0"
 }
 
-#Define a AWS resource the provider knows about (basically, this is one of the
-#ways terraform APIs and provider APIs talk) In this case, a jumphost named captain
-#  For aws_instance documentation, see e.g. https://www.terraform.io/docs/providers/aws/r/instance.html
-#  TODO: Add a corresponding data resource, like:
-#  
-#  data "aws_ami" "ubuntu" {
-#    most_recent = true
-# 
-#    filter {
-#      name   = "name"
-#      values = ["ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"]
-#    }
-# 
-#    filter {
-#      name   = "virtualization-type"
-#      values = ["hvm"]
-#    }
-# 
-#    owners = ["099720109477"] # Canonical
-#  }
+
+#######################
+###### RESOURCES ######
+#######################
+#    template:
+#    resource "type" "name" {
 #
-#  This will help further minimize the amount of by-hand setup users have to do.
-#  I don't want them to have to execute setup.sh.
+#    }
+
 resource "aws_instance" "captain" {
   ami           = "ami-01d9d5f6cecc31f85"  #The Amazon Machine Image, basically your resource's base OS
   #instance_type = "t2.micro"               #Type of resource, see AWS docs, t2.micro is free and good to start with
@@ -198,17 +187,6 @@ resource "aws_instance" "captain" {
   }
 }
 
-#Enable use of allocated eip
-resource "aws_eip" "public_igw" {
-  vpc = true
-}
-
-#Create the smallest ever VPC, mostly for elastic ip
-resource "aws_eip_association" "eip_assoc" {
-  instance_id   = "${aws_instance.captain.id}"
-  allocation_id = "${aws_eip.public_igw.id}"
-}
-
 #Create a new resource, this time a t2.medium EC2 instance with 6 nodes
 #TODO: rename server --> cluster (k8s or trad datacenter), more accurate
 resource "aws_instance" "resource_server_medium" {
@@ -333,9 +311,37 @@ resource "aws_instance" "resource_server_medium" {
       host     = "${self.public_ip}"
     }
   }
-
 }
-##
+
+
+#######################
+###### VPC/NET   ######
+#######################
+
+resource "aws_vpc" "my_vpc" {
+  cidr_block = "10.1.0.0/16"
+  
+  tags = {
+    Name = "Unified VPC"
+  }
+}
+
+
+##Enable use of allocated eip
+#resource "aws_eip" "public_igw" {
+#  vpc = true
+#
+#  tags = {
+#    Name = "public_igw"
+#  }
+#}
+#
+##Associate elastic ip
+#resource "aws_eip_association" "eip_assoc" {
+#  instance_id   = "${aws_instance.captain.id}"
+#  allocation_id = "${aws_eip.public_igw.id}"
+#}
+
 ##Create a new resource, this time a t2.micro EC2 instance with 6 nodes
 #resource "aws_instance" "resource_server_micro" {
 #  ami           = "ami-01d9d5f6cecc31f85"
@@ -368,6 +374,6 @@ output "resource_server_medium_private_ips" {
 #output "resource_server_micro_public_ips" {
 #  value = ["${aws_instance.resource_server_micro.*.public_ip}"]
 #}
-output "igw_eip" {
-  value = ["${aws_eip_association.eip_assoc.*}"]
-}
+#output "igw_eip" {
+#  value = ["${aws_eip_association.eip_assoc.*}"]
+#}
