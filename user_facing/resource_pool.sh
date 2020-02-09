@@ -21,7 +21,8 @@ elif [ "${RESOURCE_CLI_ARGS_NOSPACE}" = "deploy-ansible-keys" ]; then
     for cur_host in $(awk '{ for(i = 1; i <= NF; i++) { print $i; } }' /etc/resource_pool/ansible/hosts)
     do
         #echo 'scp -i ajacobs-IAM-keypair.pem /etc/resource_pool_cli/ansibe/keys/id_rsa.pub ubuntu@${host}:~' | sudo bash
-        echo 'ch: ${cur_host}'
+        echo "scp -i ajacobs-IAM-keypair.pem /etc/resource_pool/ansible/keys/id_rsa.pub ubuntu@${cur_host}:~" | sudo bash
+        echo "ssh -i ajacobs-IAM-keypair.pem ubuntu@${cur_host} cat id_rsa.pub >> /root/.ssh/authorized_keys" | sudo bash
     done
 
 
