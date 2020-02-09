@@ -15,12 +15,12 @@ provider "aws" {
 }
 
 
-#######################
-###### RESOURCES ######
-#######################
+#####################################
+###### Compute / Host Resources #####
+#####################################
 #    template:
 #    resource "type" "name" {
-#
+#      resource_attribute = value
 #    }
 
 resource "aws_instance" "captain" {
@@ -28,7 +28,7 @@ resource "aws_instance" "captain" {
   #instance_type = "t2.micro"               #Type of resource, see AWS docs, t2.micro is free and good to start with
   instance_type = "t2.medium"
   key_name      = "ajacobs-IAM-keypair"    #You must have setup keypairs with Amazon and a proper .pem file
-  
+  associate_public_ip_address = false # public connections to this machine are managed through dynamic elastic ips 
   #user_data is one of the ways you can setup your "early" system, getting the very basics needed for your users to be productive
   user_data = <<-EOF
               #!/bin/bash
@@ -194,6 +194,7 @@ resource "aws_instance" "resource_server_medium" {
   instance_type = "t2.medium"
   count         = 2
   key_name      = "ajacobs-IAM-keypair"
+  associate_public_ip_address = false # these aren't for the public
 
   #user_data is one of the ways you can setup your "early" system, getting the very basics needed for your users to be productive
   user_data = <<-EOF
@@ -313,35 +314,6 @@ resource "aws_instance" "resource_server_medium" {
   }
 }
 
-
-#######################
-###### VPC/NET   ######
-#######################
-
-resource "aws_vpc" "my_vpc" {
-  cidr_block = "10.1.0.0/16"
-  
-  tags = {
-    Name = "Unified VPC"
-  }
-}
-
-
-##Enable use of allocated eip
-#resource "aws_eip" "public_igw" {
-#  vpc = true
-#
-#  tags = {
-#    Name = "public_igw"
-#  }
-#}
-#
-##Associate elastic ip
-#resource "aws_eip_association" "eip_assoc" {
-#  instance_id   = "${aws_instance.captain.id}"
-#  allocation_id = "${aws_eip.public_igw.id}"
-#}
-
 ##Create a new resource, this time a t2.micro EC2 instance with 6 nodes
 #resource "aws_instance" "resource_server_micro" {
 #  ami           = "ami-01d9d5f6cecc31f85"
@@ -354,21 +326,90 @@ resource "aws_vpc" "my_vpc" {
 #  }
 #}
 
+
+
+
+#######################
+###### VPC/NET   ######
+#######################
+
+resource "aws_vpc" "resource_pool_vpc" {
+  cidr_block = "10.0.1.0/28" # 10.0.1.0 -- 10.0.1.15
+  
+  tags = {
+    Name = "Unified Resource Pool VPC"
+  }
+
+  #Potentially useful attributes, current values from state:
+  #  "arn": "arn:aws:ec2:us-east-1:573419053708:vpc/vpc-0d0bb7447d5419d29",
+  #  "default_network_acl_id": "acl-04b6adc0922bfbe8c",
+  #  "default_route_table_id": "rtb-006a9d1d2401adc04",
+  #  "main_route_table_id": "rtb-006a9d1d2401adc04",
+  #  "default_security_group_id": "sg-08c5476c3ca0475b3",
+  #  "dhcp_options_id": "dopt-aa9f53d0",
+  #  "enable_dns_hostnames": true,
+  #  "enable_dns_support": true,
+  #  "id": "vpc-0d0bb7447d5419d29",
+  #  "instance_tenancy": "default",
+  #  "ipv6_association_id": "",
+  #  "ipv6_cidr_block": "",
+  #  "owner_id": "573419053708",
+
+}
+
+
+##Enable use of allocated eip
+resource "aws_eip" "public_igw" {
+  vpc = true
+
+  tags = {
+    Name = "public_igw"
+  }
+}
+#
+#Associate elastic ips
+resource "aws_eip_association" "eip_captain_assoc" {
+  instance_id   = "${aws_instance.captain.id}"
+  allocation_id = "${aws_eip.public_igw.id}"
+}
+
+resource "aws_eip" "rp_igw" {
+  vpc = true
+
+  tags = {
+    Name = "rp_igw"
+  }
+}
+
+resource "aws_eip_association" "eip_rp_assoc" {
+  instance_id   = "${aws_instance.resource_server_medium[0].id}"
+  allocation_id = "${aws_eip.rp_igw.id}"
+}
+
 #Print the captain's public id to the terminal after things like terraform apply or refresh
-output "captain_public_ip" {
+output "captain_host_details" {
   value = [
     "${aws_instance.captain.public_ip}",
     "${aws_instance.captain.private_ip}",
-    "${aws_instance.captain.public_dns}"
+    "${aws_instance.captain.public_dns}",
+    "${aws_eip_association.eip_captain_assoc}"
   ]
   #value = ["${aws_instance.captain.public_ip} ${aws_instance}"]
 }
 
-output "resource_server_medium_public_ips" {
-  value = ["${aws_instance.resource_server_medium.*.public_ip}"]
+output "resource_server_medium_details" {
+  value = [
+    "${aws_instance.resource_server_medium.*.public_ip}",
+    "${aws_instance.resource_server_medium.*.private_ip}"
+  ]
 }
-output "resource_server_medium_private_ips" {
-  value = ["${aws_instance.resource_server_medium.*.private_ip}"]
+
+output "aws_eip_rp_igw" {
+  value = ["${aws_eip.rp_igw}"]
+}
+
+output "aws_eip_capt_public_igw" {
+  value = ["${aws_eip.public_igw}"]
 }
 #
 #output "resource_server_micro_public_ips" {
