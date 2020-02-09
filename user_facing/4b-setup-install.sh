@@ -10,4 +10,7 @@ cat ${DIR_ANSIBLE}/keys/id_rsa.pub >> /root/.ssh/authorized_keys
 # LET USER KNOW NEXT STEPS
 echo "The resource_pool utility is now available at $ rpa_cli"
 echo ""
-echo "First time setup for admins: execute deploy-ansible-keys after configuring /etc/resource_pool/ansible/hosts and fetching IAM-keypair.pem "
+echo "First time setup for admins:"
+echo "     1) configure /etc/resource_pool_cli/ansible/hosts and fetch IAM-keypair.pem"
+echo "     2) execute otb on each host"
+echo "     3) execute deploy-ansible-keys after hosts are primed"

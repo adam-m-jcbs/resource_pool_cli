@@ -15,7 +15,7 @@ from prettytable import PrettyTable
 import yaml
 import shutil
 
-HOST_ANSIBLE_DIR = "/etc/resource_pool/ansible"
+HOST_ANSIBLE_DIR = "/etc/resource_pool_cli/ansible"
 PLAYBOOK_DIR = "{}/playbooks".format(HOST_ANSIBLE_DIR)
 TEMPLATE_DIR = "{}/pool_template".format(HOST_ANSIBLE_DIR)
 POOLS_DIR = "{}/pools".format(HOST_ANSIBLE_DIR)
