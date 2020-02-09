@@ -15,6 +15,83 @@ provider "aws" {
 }
 
 
+#######################
+###### VPC/NET   ######
+#######################
+
+resource "aws_vpc" "resource_pool_vpc" {
+  cidr_block = "10.0.1.0/28" # 10.0.1.0 -- 10.0.1.15
+  
+  tags = {
+    Name = "Unified Resource Pool VPC"
+  }
+
+  #Potentially useful attributes, current values from state:
+  #  "arn": "arn:aws:ec2:us-east-1:573419053708:vpc/vpc-0d0bb7447d5419d29",
+  #  "default_network_acl_id": "acl-04b6adc0922bfbe8c",
+  #  "default_route_table_id": "rtb-006a9d1d2401adc04",
+  #  "main_route_table_id": "rtb-006a9d1d2401adc04",
+  #  "default_security_group_id": "sg-08c5476c3ca0475b3",
+  #  "dhcp_options_id": "dopt-aa9f53d0",
+  #  "enable_dns_hostnames": true,
+  #  "enable_dns_support": true,
+  #  "id": "vpc-0d0bb7447d5419d29",
+  #  "instance_tenancy": "default",
+  #  "ipv6_association_id": "",
+  #  "ipv6_cidr_block": "",
+  #  "owner_id": "573419053708",
+
+}
+
+#For now, just including everyone.  Should instead use multiple subnets with redundancies/good separation
+resource "aws_subnet" "resource_pool_subnet" {
+  vpc_id = "${aws_vpc.resource_pool_vpc.id}"
+  cidr_block = "10.0.1.0/28"  # 10.0.1.0 - 10.0.1.7
+  #availability_zone = "us-east-1a"
+
+  tags = {
+    Name = "Unified Resource Pool VPC"
+  }
+}
+
+
+resource "aws_network_interface" "resource_pool_netface" {
+  subnet_id   = "${aws_subnet.resource_pool_subnet.id}"
+  #private_ips = ["10.0.1.3"]
+
+  tags = {
+    Name = "primary_network_interface"
+  }
+}
+
+##Enable use of allocated eip
+resource "aws_eip" "public_igw" {
+  vpc = true
+
+  tags = {
+    Name = "public_igw"
+  }
+}
+#
+#Associate elastic ips
+resource "aws_eip_association" "eip_captain_assoc" {
+  instance_id   = "${aws_instance.captain.id}"
+  allocation_id = "${aws_eip.public_igw.id}"
+}
+
+resource "aws_eip" "rp_igw" {
+  vpc = true
+
+  tags = {
+    Name = "rp_igw"
+  }
+}
+
+resource "aws_eip_association" "eip_rp_assoc" {
+  instance_id   = "${aws_instance.resource_server_medium[0].id}"
+  allocation_id = "${aws_eip.rp_igw.id}"
+}
+
 #####################################
 ###### Compute / Host Resources #####
 #####################################
@@ -76,6 +153,15 @@ resource "aws_instance" "captain" {
   #  }
   #  
   #}
+
+  #network_interface {
+  #  network_interface_id = "${aws_network_interface.resource_pool_netface.id}"
+  #  device_index         = 0
+  #}
+
+  credit_specification {
+    cpu_credits = "unlimited"
+  }
 
   provisioner "file" {
     source      = "../ansible/ansible.cfg"
@@ -195,7 +281,7 @@ resource "aws_instance" "resource_server_medium" {
   count         = 2
   key_name      = "ajacobs-IAM-keypair"
   associate_public_ip_address = false # these aren't for the public
-
+  
   #user_data is one of the ways you can setup your "early" system, getting the very basics needed for your users to be productive
   user_data = <<-EOF
               #!/bin/bash
@@ -327,64 +413,9 @@ resource "aws_instance" "resource_server_medium" {
 #}
 
 
-
-
 #######################
-###### VPC/NET   ######
+###### Output/Debug ###
 #######################
-
-resource "aws_vpc" "resource_pool_vpc" {
-  cidr_block = "10.0.1.0/28" # 10.0.1.0 -- 10.0.1.15
-  
-  tags = {
-    Name = "Unified Resource Pool VPC"
-  }
-
-  #Potentially useful attributes, current values from state:
-  #  "arn": "arn:aws:ec2:us-east-1:573419053708:vpc/vpc-0d0bb7447d5419d29",
-  #  "default_network_acl_id": "acl-04b6adc0922bfbe8c",
-  #  "default_route_table_id": "rtb-006a9d1d2401adc04",
-  #  "main_route_table_id": "rtb-006a9d1d2401adc04",
-  #  "default_security_group_id": "sg-08c5476c3ca0475b3",
-  #  "dhcp_options_id": "dopt-aa9f53d0",
-  #  "enable_dns_hostnames": true,
-  #  "enable_dns_support": true,
-  #  "id": "vpc-0d0bb7447d5419d29",
-  #  "instance_tenancy": "default",
-  #  "ipv6_association_id": "",
-  #  "ipv6_cidr_block": "",
-  #  "owner_id": "573419053708",
-
-}
-
-
-##Enable use of allocated eip
-resource "aws_eip" "public_igw" {
-  vpc = true
-
-  tags = {
-    Name = "public_igw"
-  }
-}
-#
-#Associate elastic ips
-resource "aws_eip_association" "eip_captain_assoc" {
-  instance_id   = "${aws_instance.captain.id}"
-  allocation_id = "${aws_eip.public_igw.id}"
-}
-
-resource "aws_eip" "rp_igw" {
-  vpc = true
-
-  tags = {
-    Name = "rp_igw"
-  }
-}
-
-resource "aws_eip_association" "eip_rp_assoc" {
-  instance_id   = "${aws_instance.resource_server_medium[0].id}"
-  allocation_id = "${aws_eip.rp_igw.id}"
-}
 
 #Print the captain's public id to the terminal after things like terraform apply or refresh
 output "captain_host_details" {
