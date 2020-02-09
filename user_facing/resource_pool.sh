@@ -11,7 +11,8 @@ fi
 
 DIR_ANSIBLE="/etc/resource_pool/ansible/"
 
-if [[ RESOURCE_CLI_ARGS -eq "bash" ]] ; then
+RESOURCE_CLI_ARGS_NOSPACE="$(echo -e "${RESOURCE_CLI_ARGS}" | tr -d '[:space:]')" 
+if [ "${RESOURCE_CLI_ARGS_NOSPACE}" = "bash" ]; then
     #drop into an interactive shell withing the container env, good for admin
     docker run --entrypoint="" -it -v ${DIR_ANSIBLE}:/etc/ansible/ -v ${DIR_ANSIBLE}/keys/:/root/.ssh/ ajacobsdocid/resource_pool_cli:latest bash
 else
