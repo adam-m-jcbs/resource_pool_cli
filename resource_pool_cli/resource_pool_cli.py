@@ -17,7 +17,7 @@ import pool_helpers as rp
 
 # Import variables explicity
 from pool_helpers import POOLS_DIR
-# Available: ANSIBLE_DIR, PLAYBOOK_DIR, TEMPLATE_DIR, POOLS_DIR, FLEET_HOSTS_YAML_FILE
+# Available: HOST_ANSIBLE_DIR, PLAYBOOK_DIR, TEMPLATE_DIR, POOLS_DIR, FLEET_HOSTS_YAML_FILE
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 def cli():
@@ -26,6 +26,7 @@ def cli():
 
 @cli.command("list", short_help="List all pools")
 def list():
+    #TODO: Add error checking
     for file in os.listdir(POOLS_DIR):
         click.echo(rp.get_pool_info_table(file))
 
