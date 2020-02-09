@@ -3,7 +3,7 @@
 # `1-setup-env.sh` serves to prepare the user environment
 
 # SET UP DIRECTORY STRUCTURE AND PULL IN ANSIBLE INITIAL SETUP 
-DIR_RESOURCE_POOL="/etc/resource_pool"
+DIR_RESOURCE_POOL="/etc/resource_pool_cli"
 DIR_ANSIBLE="${DIR_RESOURCE_POOL}/ansible"
 DIR_ANSIBLE_PLAYBOOKS="${DIR_ANSIBLE}/playbooks"
 DIR_POOL_TEMPLATE="${DIR_ANSIBLE}/pool_template"

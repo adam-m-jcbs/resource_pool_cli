@@ -9,7 +9,7 @@ if [[ $# -eq 0 ]] ; then
     RESOURCE_CLI_ARGS="-h"
 fi
 
-DIR_ANSIBLE="/etc/resource_pool/ansible/"
+DIR_ANSIBLE="/etc/resource_pool_cli/ansible/"
 
 RESOURCE_CLI_ARGS_NOSPACE="$(echo -e "${RESOURCE_CLI_ARGS}" | tr -d '[:space:]')" 
 if [ "${RESOURCE_CLI_ARGS_NOSPACE}" = "bash" ]; then
@@ -18,10 +18,10 @@ if [ "${RESOURCE_CLI_ARGS_NOSPACE}" = "bash" ]; then
 elif [ "${RESOURCE_CLI_ARGS_NOSPACE}" = "deploy-ansible-keys" ]; then
     #deploy auth keys to hosts, enabling ansible management
     #docker run --entrypoint="" -it -v ${DIR_ANSIBLE}:/etc/ansible/ -v ${DIR_ANSIBLE}/keys/:/root/.ssh/ ajacobsdocid/resource_pool_cli:latest bash
-    for cur_host in $(awk '{ for(i = 1; i <= NF; i++) { print $i; } }' /etc/resource_pool/ansible/hosts)
+    for cur_host in $(awk '{ for(i = 1; i <= NF; i++) { print $i; } }' /etc/resource_pool_cli/ansible/hosts)
     do
         #echo 'scp -i ajacobs-IAM-keypair.pem /etc/resource_pool_cli/ansibe/keys/id_rsa.pub ubuntu@${host}:~' | sudo bash
-        echo "scp -i ajacobs-IAM-keypair.pem /etc/resource_pool/ansible/keys/id_rsa.pub ubuntu@${cur_host}:~" | sudo bash
+        echo "scp -i ajacobs-IAM-keypair.pem /etc/resource_pool_cli/ansible/keys/id_rsa.pub ubuntu@${cur_host}:~" | sudo bash
         ssh -i ajacobs-IAM-keypair.pem ubuntu@${cur_host} "echo 'cat id_rsa.pub >> /root/.ssh/authorized_keys' | sudo bash"
     done
 
