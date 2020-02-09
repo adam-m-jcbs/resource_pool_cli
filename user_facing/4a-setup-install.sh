@@ -7,6 +7,7 @@
 wget ${GITRAW_BASE_URL}/user_facing/resource_pool.sh -O "${DIR_RESOURCE_POOL}/resource_pool.sh"
 chmod 755 "${DIR_RESOURCE_POOL}/resource_pool.sh"
 
+## Prepare the docker environment
 # PULL THE RESOURCE_POOL DOCKER IMAGE
 #    e.g. docker_userid/resource_pool:latest
 #    LEET HACKER ALERT: This is a very basic but effective implementation of a one-time-password (only it's a pass token)
