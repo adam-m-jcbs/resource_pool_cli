@@ -14,6 +14,7 @@ import json
 from prettytable import PrettyTable
 import yaml
 import shutil
+#import distutils
 
 #HOST_ANSIBLE_DIR = "/etc/resource_pool_cli/ansible"
 CONT_ANSIBLE_DIR = "/etc/ansible"
@@ -52,7 +53,10 @@ def init_pool_dir(rp_name):
     This function initializes a new pool directory, with basic 
     template files in place
     """
-    shutil.copytree(TEMPLATE_DIR, "{}/{}".format(POOLS_DIR, rp_name))
+    src_dir = TEMPLATE_DIR
+    dst_dir = "{}/{}".format(POOLS_DIR, rp_name)
+    shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
+    #distutils.dir_util.copy_tree(src_dir, dst_dir, update=1)
 
 
 def init_pool(rp_name, masters_list, workers_list):
