@@ -180,8 +180,8 @@ def get_specs(rp_name):
     if rp_name == "fleet":
         server_file_name = "hosts.yml"
 
-    #ansible_facts_cmd = "ansible all -m gather_facts --tree {}/{}/facts".format(rp_dirme)
-    ansible_facts_cmd = "ansible all -m gather_facts --tree /tmp/facts"
+    ansible_facts_cmd = "ansible all -m gather_facts --tree {}".format(rp_dir)
+    #ansible_facts_cmd = "ansible all -m gather_facts --tree /tmp/facts"
     
     click.echo('facts cmd: {}'.format(ansible_facts_cmd))
     process = subprocess.Popen(
@@ -193,38 +193,35 @@ def get_specs(rp_name):
 
     specs = {}
 
-    for cur_item in ansible_facts_cmd_out:
-        click.echo('cur_item: {}'.format(cur_item))
-
     # The ansible_facts_cmd saves facts as json inside of files named after the server.
     # This is why we are looping through the directory, and reading file contents as json.
-    #for file in os.listdir(rp_dir):
-    #    click.echo('cur file: {}'.format(file))
-    #    if file.endswith(".yml"):
-    #        continue
+    for host_facts_file in os.listdir(rp_dir):
+        click.echo('cur file: {}'.format(host_facts_file))
+        if host_facts_file.endswith(".yml"):
+            continue
 
-    #    with open("{}/{}".format(rp_dir, file), "r") as myfile:
-    #        data = myfile.read()
-    #    facts = json.loads(data)
+        with open("{}/{}".format(rp_dir, host_facts_file), "r") as myfile:
+            data = myfile.read()
+        facts = json.loads(data)
 
-    #    click.echo('json facts: {}'.format(facts))
-    #    # Whether or not a server can be reached, the fact file is generated.
-    #    # Here, we remove facts from servers that cannot be reachced,
-    #    # in order to avoid inaccurate spec counts.
-    #    if "msg" in facts:
-    #        if facts["msg"].startswith("SSH Error"):
-    #            os.remove("{}/{}".format(rp_dir, file))
-    #            continue
+        click.echo('json facts: {}'.format(facts))
+        # Whether or not a server can be reached, the fact file is generated.
+        # Here, we remove facts from servers that cannot be reachced,
+        # in order to avoid inaccurate spec counts.
+        if "msg" in facts:
+            if facts["msg"].startswith("SSH Error"):
+                os.remove("{}/{}".format(rp_dir, host_facts_file))
+                continue
 
-    #    this_server_core_count = facts["ansible_facts"]["ansible_processor_cores"]
-    #    this_server_mem_amount = facts["ansible_facts"]["ansible_memtotal_mb"] / 1024.0
-    #    specs[file] = {
-    #        "cores": this_server_core_count,
-    #        "mem": round(this_server_mem_amount),
-    #    }
-    #    os.remove("{}/{}".format(rp_dir, file))
+        this_server_core_count = facts["ansible_facts"]["ansible_processor_cores"]
+        this_server_mem_amount = facts["ansible_facts"]["ansible_memtotal_mb"] / 1024.0
+        specs[host_facts_file] = {
+            "cores": this_server_core_count,
+            "mem": round(this_server_mem_amount),
+        }
+        os.remove("{}/{}".format(rp_dir, host_facts_file))
 
-    #return specs
+    return specs
 
 
 def get_total_cores_mem(rp_name):
