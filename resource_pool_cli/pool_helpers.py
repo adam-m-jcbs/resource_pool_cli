@@ -189,22 +189,12 @@ def get_specs(rp_name):
     )
     ansible_facts_cmd_out = process.communicate()[0]
 
-    click.echo('facts output: {}'.format(ansible_facts_cmd_out))
-
-    #ansible_facts_cmd = "ls /etc/ansible/"
-    #click.echo('facts cmd: {}'.format(ansible_facts_cmd))
-    #process = subprocess.Popen(
-    #    ansible_facts_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    #)
-    #ansible_facts_cmd_out = process.communicate()
-
     #click.echo('facts output: {}'.format(ansible_facts_cmd_out))
 
     specs = {}
 
     for cur_item in ansible_facts_cmd_out:
-        click.echo('cur_item: cur_item.keys()')
-        click.echo('    {}: {}'.format(str(cur_item), cur_item.keys()))
+        click.echo('cur_item: {}'.format(cur_item))
 
     # The ansible_facts_cmd saves facts as json inside of files named after the server.
     # This is why we are looping through the directory, and reading file contents as json.
