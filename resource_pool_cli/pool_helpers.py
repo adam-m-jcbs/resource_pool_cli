@@ -15,11 +15,12 @@ from prettytable import PrettyTable
 import yaml
 import shutil
 
-HOST_ANSIBLE_DIR = "/etc/resource_pool_cli/ansible"
-PLAYBOOK_DIR = "{}/playbooks".format(HOST_ANSIBLE_DIR)
-TEMPLATE_DIR = "{}/pool_template".format(HOST_ANSIBLE_DIR)
-POOLS_DIR = "{}/pools".format(HOST_ANSIBLE_DIR)
-FLEET_HOSTS_YAML_FILE = "{}/pools/fleet/hosts.yml".format(HOST_ANSIBLE_DIR)
+#HOST_ANSIBLE_DIR = "/etc/resource_pool_cli/ansible"
+CONT_ANSIBLE_DIR = "/etc/ansible"
+PLAYBOOK_DIR = "{}/playbooks".format(CONT_ANSIBLE_DIR)
+TEMPLATE_DIR = "{}/pool_template".format(CONT_ANSIBLE_DIR)
+POOLS_DIR = "{}/pools".format(CONT_ANSIBLE_DIR)
+FLEET_HOSTS_YAML_FILE = "{}/pools/fleet/hosts.yml".format(CONT_ANSIBLE_DIR)
 
 
 def randomString(stringLength=10):
