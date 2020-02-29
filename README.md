@@ -1,5 +1,7 @@
 __Resource Pool API__ by Adam Jacobs
 
+[Video Demo Available Here](https://youtu.be/qFaXzAsrBLM)
+
 ## Project Summary:
 
 `resource_pool_cli` is a tool originally written by developer Gerardo Laracuente (@glaracuente) while he was at Insight Data Science.
